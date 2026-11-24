@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Minesweeper</title>
+    <meta name="description" content="A fast, fair Minesweeper in your browser. No install, no account." />
+    <link rel="stylesheet" href="src/styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="toolbar">
+        <h1>Minesweeper</h1>
+        <div class="controls">
+          <label class="visually-hidden" for="difficulty">Difficulty</label>
+          <select id="difficulty"></select>
+          <button id="new-game" type="button">New game</button>
+        </div>
+      </header>
+      <p id="status" class="status" aria-live="polite"></p>
+      <div class="board-scroll">
+        <div id="board" class="board" role="grid" aria-label="Minefield"></div>
+      </div>
+    </main>
+    <script type="module" src="src/ui.js"></script>
+  </body>
+</html>

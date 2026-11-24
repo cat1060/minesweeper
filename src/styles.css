@@ -1,0 +1,130 @@
+:root {
+  --bg: #f4f1ea;
+  --text: #1f2a2e;
+  --muted: #5b676b;
+  --panel: #ffffff;
+  --border: #d9d3c7;
+  --accent: #1f7a6d;
+  --accent-text: #ffffff;
+  --tile: #c9d8d3;
+  --tile-hover: #b6cbc4;
+  --tile-open: #fbfaf6;
+  --cell-size: 32px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161c1e;
+    --text: #e6ece9;
+    --muted: #9aa7a3;
+    --panel: #1f272a;
+    --border: #33403f;
+    --accent: #3fb3a1;
+    --accent-text: #0e1415;
+    --tile: #35504b;
+    --tile-hover: #41625c;
+    --tile-open: #232b2d;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.app {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.toolbar {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+h1 { margin: 0; font-size: 1.5rem; letter-spacing: -0.01em; }
+
+.controls { display: flex; gap: 8px; flex-wrap: wrap; }
+
+select, button {
+  font: inherit;
+  border-radius: 8px;
+  min-height: 40px;
+  padding: 0 12px;
+}
+
+select {
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+#new-game {
+  background: var(--accent);
+  color: var(--accent-text);
+  border: 0;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.status { margin: 0; color: var(--muted); min-height: 1.4em; text-align: center; }
+
+/* The board scrolls inside its own box so wide boards never scroll the page. */
+.board-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 12px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.board { display: grid; gap: 3px; width: max-content; }
+.row { display: grid; grid-template-columns: repeat(var(--cols), var(--cell-size)); gap: 3px; }
+
+.cell {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: var(--tile);
+  cursor: pointer;
+  font-weight: 700;
+  -webkit-touch-callout: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.cell:hover { background: var(--tile-hover); }
+.cell:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  :root { --cell-size: 30px; }
+  .app { padding: 16px 16px; }
+}
