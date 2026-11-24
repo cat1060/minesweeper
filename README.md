@@ -11,10 +11,11 @@ Live URL: not deployed yet.
 - Clicking a cell reveals it: a number shows how many of its eight neighbours are mines, and an empty cell opens its neighbours until numbers border the area.
 - Flags: right-click on a computer, or long-press (about 0.4 s) on a phone, to place or remove a flag. **Flag mode** makes a plain tap or click flag instead of reveal, for touch screens where long-press is awkward. Flagged cells can't be revealed until the flag is removed.
 - Win and loss: revealing every safe cell wins, shows your time, and flags the remaining mines. Revealing a mine loses: every mine is shown, the one you hit is highlighted, and wrong flags are struck through. No moves count after the game ends.
-- New game and the difficulty picker reset the board. On narrow screens, wide boards scroll inside their own box.
+- Status bar: **Mines left** (mines minus flags; it turns red below zero) and **Time** in seconds, which starts on the first reveal and stops when the game ends.
+- New game and the difficulty picker reset the board, the counter, and the timer. On narrow screens, wide boards scroll inside their own box.
 - Light and dark themes follow your system setting.
 
-Not yet: the mines-remaining counter and the live timer ([issue #5](https://github.com/cat1060/minesweeper/issues/5)).
+All must-have features are built. Nice-to-haves still open: chording, best times, and keyboard play ([issues #6–#8](https://github.com/cat1060/minesweeper/issues)).
 
 ## Run it locally
 
@@ -41,7 +42,7 @@ This uses Node's built-in test runner (Node 20 or later); there is nothing to in
 
 ## Known limitations
 
-- No live counter or timer yet; the time appears only when you win.
+- Refreshing the page mid-game starts a new game; games in progress are not saved.
 - Long-press flagging is tested with simulated touch in a desktop browser, not yet on a real phone.
 
 Written with Claude Code.

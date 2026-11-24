@@ -177,6 +177,11 @@ function win(game, now) {
   }
 }
 
+/** Mines minus flags. Goes negative when there are more flags than mines. */
+export function minesRemaining(game) {
+  return game.mineCount - game.cells.filter((cell) => cell.flagged).length;
+}
+
 /** Whole seconds played: from the first reveal to the end, or to `now` while playing. */
 export function elapsedSeconds(game, now = Date.now()) {
   if (game.startedAt === null) return 0;

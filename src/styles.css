@@ -61,7 +61,7 @@ body {
 }
 
 .app {
-  max-width: 1080px;
+  max-width: 1140px;
   margin: 0 auto;
   padding: 24px 16px;
   display: flex;
@@ -134,6 +134,22 @@ select {
 .board.flag-mode .cell:not(.open) { cursor: crosshair; }
 
 .status { margin: 0; color: var(--muted); min-height: 1.4em; text-align: center; }
+
+/* Mines-left counter and timer. */
+.stats { display: flex; gap: 12px; }
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 96px;
+  padding: 6px 14px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.stat-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.stat-value { font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.stat-value.negative { color: var(--flag); }
 
 /* The board scrolls inside its own box so wide boards never scroll the page. */
 .board-scroll {

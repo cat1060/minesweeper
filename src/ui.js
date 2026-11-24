@@ -1,4 +1,6 @@
-import { PRESETS, createGame, cellAt, elapsedSeconds, isOver, isWrongFlag, reveal, toggleFlag } from './game.js';
+import {
+  PRESETS, createGame, cellAt, elapsedSeconds, isOver, isWrongFlag, minesRemaining, reveal, toggleFlag,
+} from './game.js';
 
 const LONG_PRESS_MS = 400;
 const MOVE_TOLERANCE_PX = 10;
@@ -8,6 +10,8 @@ const statusEl = document.getElementById('status');
 const difficultyEl = document.getElementById('difficulty');
 const newGameEl = document.getElementById('new-game');
 const flagModeEl = document.getElementById('flag-mode');
+const minesLeftEl = document.getElementById('mines-left');
+const timerEl = document.getElementById('timer');
 
 let game;
 let flagMode = false;
@@ -71,6 +75,26 @@ function render() {
   boardEl.classList.toggle('over', isOver(game));
   statusEl.dataset.state = game.status;
   statusEl.textContent = statusText();
+  minesLeftEl.textContent = minesRemaining(game);
+  minesLeftEl.classList.toggle('negative', minesRemaining(game) < 0);
+  renderTimer();
+  syncTicker();
+}
+
+function renderTimer() {
+  timerEl.textContent = elapsedSeconds(game);
+}
+
+// Tick only while a game is in progress; the readout uses timestamps, so
+// a slow or paused tab still shows the right time when it catches up.
+let ticker = null;
+function syncTicker() {
+  const shouldTick = game.status === 'playing' && game.startedAt !== null;
+  if (shouldTick && !ticker) ticker = setInterval(renderTimer, 250);
+  if (!shouldTick && ticker) {
+    clearInterval(ticker);
+    ticker = null;
+  }
 }
 
 function statusText() {
@@ -79,8 +103,8 @@ function statusText() {
     return `You won in ${s} ${s === 1 ? 'second' : 'seconds'}!`;
   }
   if (game.status === 'lost') return 'You hit a mine. Press New game to try again.';
-  if (!game.minesPlaced) return `${game.mineCount} mines. Click any cell to start; the first click is always safe.`;
-  return `${game.mineCount} mines.`;
+  if (!game.minesPlaced) return 'Click any cell to start; the first click is always safe.';
+  return 'Right-click or long-press to flag a mine.';
 }
 
 function setFlagMode(on) {
