@@ -29,6 +29,22 @@ export function createGame(difficulty = 'beginner') {
   };
 }
 
+export function isOver(game) {
+  return game.status === 'won' || game.status === 'lost';
+}
+
+/**
+ * Put a flag on a hidden cell, or take it off. Flags can go down before the
+ * first click too. Returns true if the cell changed.
+ */
+export function toggleFlag(game, row, col) {
+  if (isOver(game)) return false;
+  const cell = cellAt(game, row, col);
+  if (cell.revealed) return false;
+  cell.flagged = !cell.flagged;
+  return true;
+}
+
 export function inBounds(game, row, col) {
   return row >= 0 && row < game.rows && col >= 0 && col < game.cols;
 }
@@ -103,11 +119,10 @@ export function computeAdjacency(game) {
  * Returns the [row, col] pairs newly revealed, in the order they opened.
  */
 export function reveal(game, row, col, random = Math.random) {
-  if (game.status === 'won' || game.status === 'lost') return [];
-  if (!game.minesPlaced) placeMines(game, row, col, random);
-
+  if (isOver(game)) return [];
   const start = cellAt(game, row, col);
   if (start.revealed || start.flagged) return [];
+  if (!game.minesPlaced) placeMines(game, row, col, random);
 
   const opened = [];
   const stack = [[row, col]];

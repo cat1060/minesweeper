@@ -19,6 +19,7 @@
   --n8: #7a6a55;
   --mine: #2b2b2b;
   --mine-bg: #f2b8a8;
+  --flag: #c23b2a;
   --cell-size: 32px;
   color-scheme: light;
 }
@@ -45,6 +46,7 @@
     --n8: #c9b8a0;
     --mine: #f3eee6;
     --mine-bg: #8a3b30;
+    --flag: #f0705e;
     color-scheme: dark;
   }
 }
@@ -101,6 +103,35 @@ select {
   font-weight: 600;
   cursor: pointer;
 }
+
+#flag-mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+#flag-mode[aria-pressed="true"] {
+  background: var(--flag);
+  border-color: var(--flag);
+  color: #fff;
+}
+#flag-mode[aria-pressed="true"] .flag-icon { background: #fff; }
+
+/* Pennant with a pole, drawn with clip-path so it is our own icon. */
+.flag-icon,
+.cell.flagged::after {
+  content: "";
+  display: block;
+  width: 14px;
+  height: 16px;
+  background: var(--flag);
+  clip-path: polygon(0 0, 100% 30%, 18% 60%, 18% 100%, 0 100%);
+}
+.cell.flagged::after { margin: auto; }
+.board.flag-mode .cell:not(.open) { cursor: crosshair; }
 
 .status { margin: 0; color: var(--muted); min-height: 1.4em; text-align: center; }
 
