@@ -208,3 +208,20 @@ select {
   :root { --cell-size: 30px; }
   .app { padding: 16px 16px; }
 }
+
+/* --- End of game --- */
+.status[data-state="won"] { color: var(--accent); font-weight: 700; }
+.status[data-state="lost"] { color: var(--flag); font-weight: 700; }
+
+.board.over .cell { cursor: default; }
+.board.over .cell:not(.open):hover { background: var(--tile); }
+
+/* The mine that ended the game stands out from the others. */
+.cell.mine.exploded { background: var(--flag); }
+.cell.mine.exploded::after { background: #fff; box-shadow: 0 0 0 3px rgb(255 255 255 / 0.35); }
+
+/* A flag on a safe cell: dimmed, with a strike through the tile. */
+.cell.wrong {
+  background-image: linear-gradient(to top right, transparent 46%, var(--flag) 46% 54%, transparent 54%);
+}
+.cell.wrong::after { background: var(--muted); }

@@ -36,7 +36,7 @@ Build in this order. Do not start a nice-to-have until all must-haves pass the j
 - If a fix fails twice, stop and say so instead of trying a third approach.
 
 ## Content and data rules
-- `game.js` is the single source of truth for game state. A cell has: `mine` (bool), `adjacent` (0–8), `revealed` (bool), `flagged` (bool). The game has: `difficulty`, `rows`, `cols`, `mineCount`, `minesPlaced`, `status` (`ready` | `playing` | `won` | `lost`), `startedAt`, `endedAt`, and `cells` (row-major, index `row * cols + col`).
+- `game.js` is the single source of truth for game state. A cell has: `mine` (bool), `adjacent` (0–8), `revealed` (bool), `flagged` (bool). The game has: `difficulty`, `rows`, `cols`, `mineCount`, `minesPlaced`, `status` (`ready` | `playing` | `won` | `lost`), `startedAt`, `endedAt` (ms timestamps, set on the first reveal and at the end), `exploded` (`[row, col]` of the losing mine, else null), and `cells` (row-major, index `row * cols + col`).
 - Mine placement takes an injectable random function so tests can use fixed boards.
 - The difficulty presets above are fixed; do not change them without asking.
 - The look is original: our own colours and icons, not a copy of any existing Minesweeper's art, faces, or sounds.

@@ -21,7 +21,8 @@ test('revealing a zero flood-fills up to the numbered border', () => {
   const opened = reveal(game, 0, 4);
   assert.deepEqual(opened[0], [0, 4], 'the clicked cell opens first');
   assert.equal(opened.length, 18, 'every safe cell opens');
-  assert.deepEqual(draw(game), ['#1...', '11...', '...11', '...1#']);
+  // Opening every safe cell also wins, which flags the mines.
+  assert.deepEqual(draw(game), ['F1...', '11...', '...11', '...1F']);
 });
 
 test('the flood fill stops at numbers and does not cross them', () => {
@@ -47,10 +48,10 @@ test('revealing an open cell again does nothing', () => {
   assert.deepEqual(reveal(game, 1, 1), []);
 });
 
-test('revealing a mine opens just that mine', () => {
+test('revealing a mine returns just that mine and spreads no further', () => {
   const game = fixedBoard(LAYOUT);
   assert.deepEqual(reveal(game, 0, 0), [[0, 0]]);
-  assert.deepEqual(draw(game), ['*####', '#####', '#####', '#####']);
+  assert.deepEqual(draw(game), ['*####', '#####', '#####', '####*'], 'safe cells stay hidden; all mines show');
 });
 
 test('no moves once the game is over', () => {

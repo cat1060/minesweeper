@@ -1,4 +1,4 @@
-import { PRESETS, createGame, cellAt, reveal, toggleFlag } from './game.js';
+import { PRESETS, createGame, cellAt, elapsedSeconds, isOver, isWrongFlag, reveal, toggleFlag } from './game.js';
 
 const LONG_PRESS_MS = 400;
 const MOVE_TOLERANCE_PX = 10;
@@ -46,6 +46,7 @@ function buildBoard() {
 }
 
 function describe(cell) {
+  if (isWrongFlag(game, cell)) return 'flagged, but not a mine';
   if (cell.flagged) return 'flagged';
   if (!cell.revealed) return 'hidden';
   if (cell.mine) return 'mine';
@@ -61,13 +62,25 @@ function render() {
     el.classList.toggle('open', cell.revealed);
     el.classList.toggle('mine', cell.revealed && cell.mine);
     el.classList.toggle('flagged', cell.flagged);
+    el.classList.toggle('wrong', isWrongFlag(game, cell));
+    el.classList.toggle('exploded', game.exploded?.[0] === r && game.exploded?.[1] === c);
     el.dataset.n = cell.revealed && !cell.mine && cell.adjacent > 0 ? cell.adjacent : '';
     el.textContent = el.dataset.n;
     el.setAttribute('aria-label', `Row ${r + 1}, column ${c + 1}, ${describe(cell)}`);
   }
-  statusEl.textContent = game.minesPlaced
-    ? `${game.mineCount} mines.`
-    : `${game.mineCount} mines. Click any cell to start; the first click is always safe.`;
+  boardEl.classList.toggle('over', isOver(game));
+  statusEl.dataset.state = game.status;
+  statusEl.textContent = statusText();
+}
+
+function statusText() {
+  if (game.status === 'won') {
+    const s = elapsedSeconds(game);
+    return `You won in ${s} ${s === 1 ? 'second' : 'seconds'}!`;
+  }
+  if (game.status === 'lost') return 'You hit a mine. Press New game to try again.';
+  if (!game.minesPlaced) return `${game.mineCount} mines. Click any cell to start; the first click is always safe.`;
+  return `${game.mineCount} mines.`;
 }
 
 function setFlagMode(on) {

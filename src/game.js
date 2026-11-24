@@ -20,6 +20,7 @@ export function createGame(difficulty = 'beginner') {
     status: 'ready', // ready | playing | won | lost
     startedAt: null,
     endedAt: null,
+    exploded: null, // [row, col] of the mine that ended a lost game
     cells: Array.from({ length: rows * cols }, () => ({
       mine: false,
       adjacent: 0,
@@ -116,13 +117,24 @@ export function computeAdjacency(game) {
  * and its neighbours safe. A cell with no adjacent mines opens its neighbours,
  * spreading until numbered cells bound the area (flood fill). Flagged cells are
  * never revealed, by a click or by the spread. Does nothing once the game is over.
+ *
+ * Revealing a mine loses: every unflagged mine is shown and `exploded` records
+ * the one clicked. Revealing the last safe cell wins: the remaining mines are
+ * flagged. `now` is a millisecond timestamp, injectable for tests.
  * Returns the [row, col] pairs newly revealed, in the order they opened.
  */
-export function reveal(game, row, col, random = Math.random) {
+export function reveal(game, row, col, random = Math.random, now = Date.now()) {
   if (isOver(game)) return [];
   const start = cellAt(game, row, col);
   if (start.revealed || start.flagged) return [];
   if (!game.minesPlaced) placeMines(game, row, col, random);
+  if (game.startedAt === null) game.startedAt = now;
+
+  if (start.mine) {
+    start.revealed = true;
+    lose(game, row, col, now);
+    return [[row, col]];
+  }
 
   const opened = [];
   const stack = [[row, col]];
@@ -139,5 +151,40 @@ export function reveal(game, row, col, random = Math.random) {
       stack.push([nr, nc]);
     }
   }
+  if (isCleared(game)) win(game, now);
   return opened;
+}
+
+/** True when every safe cell is revealed. */
+export function isCleared(game) {
+  return game.cells.every((cell) => cell.mine || cell.revealed);
+}
+
+function lose(game, row, col, now) {
+  game.status = 'lost';
+  game.endedAt = now;
+  game.exploded = [row, col];
+  for (const cell of game.cells) {
+    if (cell.mine && !cell.flagged) cell.revealed = true;
+  }
+}
+
+function win(game, now) {
+  game.status = 'won';
+  game.endedAt = now;
+  for (const cell of game.cells) {
+    if (cell.mine) cell.flagged = true;
+  }
+}
+
+/** Whole seconds played: from the first reveal to the end, or to `now` while playing. */
+export function elapsedSeconds(game, now = Date.now()) {
+  if (game.startedAt === null) return 0;
+  const end = game.endedAt ?? now;
+  return Math.floor((end - game.startedAt) / 1000);
+}
+
+/** A flag on a safe cell, shown once the game is lost. */
+export function isWrongFlag(game, cell) {
+  return game.status === 'lost' && cell.flagged && !cell.mine;
 }
