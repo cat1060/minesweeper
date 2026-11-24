@@ -2,7 +2,7 @@
 
 A fast, fair Minesweeper in the browser, with no install or account. Plain HTML, CSS, and JavaScript, no build step, and zero dependencies.
 
-Live URL: not deployed yet.
+Live URL: https://minesweeper-seven-lime.vercel.app (Vercel hobby plan; every push to `main` deploys automatically).
 
 ## What it does today
 
