@@ -1,4 +1,4 @@
-import { PRESETS, createGame, placeMines } from './game.js';
+import { PRESETS, createGame, cellAt, reveal } from './game.js';
 
 const boardEl = document.getElementById('board');
 const statusEl = document.getElementById('status');
@@ -40,21 +40,33 @@ function buildBoard() {
   }
 }
 
+function describe(cell) {
+  if (!cell.revealed) return 'hidden';
+  if (cell.mine) return 'mine';
+  if (cell.adjacent === 0) return 'empty';
+  return `${cell.adjacent} ${cell.adjacent === 1 ? 'mine' : 'mines'} nearby`;
+}
+
 function render() {
   for (const el of boardEl.querySelectorAll('.cell')) {
     const r = Number(el.dataset.row);
     const c = Number(el.dataset.col);
-    el.setAttribute('aria-label', `Row ${r + 1}, column ${c + 1}, hidden`);
+    const cell = cellAt(game, r, c);
+    el.classList.toggle('open', cell.revealed);
+    el.classList.toggle('mine', cell.revealed && cell.mine);
+    el.dataset.n = cell.revealed && !cell.mine && cell.adjacent > 0 ? cell.adjacent : '';
+    el.textContent = el.dataset.n;
+    el.setAttribute('aria-label', `Row ${r + 1}, column ${c + 1}, ${describe(cell)}`);
   }
   statusEl.textContent = game.minesPlaced
-    ? `${game.mineCount} mines placed. Revealing cells comes next.`
+    ? `${game.mineCount} mines.`
     : `${game.mineCount} mines. Click any cell to start; the first click is always safe.`;
 }
 
 boardEl.addEventListener('click', (event) => {
   const el = event.target.closest('.cell');
   if (!el) return;
-  if (!game.minesPlaced) placeMines(game, Number(el.dataset.row), Number(el.dataset.col));
+  reveal(game, Number(el.dataset.row), Number(el.dataset.col));
   render();
 });
 

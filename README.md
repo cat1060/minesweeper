@@ -8,9 +8,11 @@ Live URL: not deployed yet.
 
 - Three difficulty presets: Beginner 9×9 with 10 mines, Intermediate 16×16 with 40, and Expert 30×16 with 99.
 - Mines are placed on the first click, never on that cell or its neighbours, so the first click always opens an area.
+- Clicking a cell reveals it: a number shows how many of its eight neighbours are mines, and an empty cell opens its neighbours until numbers border the area.
 - New game and the difficulty picker reset the board. On narrow screens, wide boards scroll inside their own box.
+- Light and dark themes follow your system setting.
 
-Not yet: revealing cells, flags, win and loss, the counter, and the timer ([issues #2–#5](https://github.com/cat1060/minesweeper/issues)).
+Not yet: flags, win and loss, the counter, and the timer ([issues #3–#5](https://github.com/cat1060/minesweeper/issues)). Until #4, hitting a mine shows it but the game carries on.
 
 ## Run it locally
 
@@ -37,6 +39,6 @@ This uses Node's built-in test runner (Node 20 or later); there is nothing to in
 
 ## Known limitations
 
-- Not yet playable: only board generation is built.
+- Not yet a full game: no flags, and no win or loss.
 
 Written with Claude Code.

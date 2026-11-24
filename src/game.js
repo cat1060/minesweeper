@@ -79,13 +79,50 @@ export function placeMines(game, safeRow, safeCol, random = Math.random) {
     game.cells[candidates[i]].mine = true;
   }
 
+  computeAdjacency(game);
+  game.minesPlaced = true;
+  game.status = 'playing';
+  return game;
+}
+
+/** Set every cell's `adjacent` to the number of mines around it. */
+export function computeAdjacency(game) {
   for (let r = 0; r < game.rows; r++) {
     for (let c = 0; c < game.cols; c++) {
       cellAt(game, r, c).adjacent = neighbours(game, r, c).filter(([nr, nc]) => cellAt(game, nr, nc).mine).length;
     }
   }
-
-  game.minesPlaced = true;
-  game.status = 'playing';
   return game;
+}
+
+/**
+ * Reveal a cell. On the first reveal, mines are placed first, keeping this cell
+ * and its neighbours safe. A cell with no adjacent mines opens its neighbours,
+ * spreading until numbered cells bound the area (flood fill). Flagged cells are
+ * never revealed, by a click or by the spread. Does nothing once the game is over.
+ * Returns the [row, col] pairs newly revealed, in the order they opened.
+ */
+export function reveal(game, row, col, random = Math.random) {
+  if (game.status === 'won' || game.status === 'lost') return [];
+  if (!game.minesPlaced) placeMines(game, row, col, random);
+
+  const start = cellAt(game, row, col);
+  if (start.revealed || start.flagged) return [];
+
+  const opened = [];
+  const stack = [[row, col]];
+  start.revealed = true;
+  while (stack.length) {
+    const [r, c] = stack.pop();
+    opened.push([r, c]);
+    const cell = cellAt(game, r, c);
+    if (cell.mine || cell.adjacent > 0) continue;
+    for (const [nr, nc] of neighbours(game, r, c)) {
+      const next = cellAt(game, nr, nc);
+      if (next.revealed || next.flagged || next.mine) continue;
+      next.revealed = true;
+      stack.push([nr, nc]);
+    }
+  }
+  return opened;
 }
